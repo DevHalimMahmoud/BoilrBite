@@ -30,17 +30,8 @@ class MainActivity : AppCompatActivity() {
             compareContents = { old, new -> old.id == new.id },
             block = { view, item ->
                 val binding = DataBindingUtil.bind<ItemBinding>(view)
-                binding?.tvId?.text = item.id.toString()
                 binding?.tvName?.text = item.name
                 binding?.tvUniversity?.text = item.university
-
-                binding?.btnDummy?.setOnClickListener {
-                    Toast.makeText(
-                        this@MainActivity,
-                        item.name,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
             })
         binding.rvMain.adapter = adapter
 
@@ -75,12 +66,40 @@ class MainActivity : AppCompatActivity() {
         adapter.onItemClickListener = object : OnItemClickListener<DummyModel, View?>() {
             override fun onItemClicked(view: View?, item: DummyModel, position: Int) {
                 super.onItemClicked(view, item, position)
-                Toast.makeText(
-                    this@MainActivity,
-                    view?.id.toString() + " " + item.name + " " + position.toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
-//                view?.setBackgroundColor(resources.getColor(R.color.black))
+                when (view?.id) {
+                    R.id.rv_item -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "item container click at position: $position",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    R.id.btn_dummy -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "button click at position: $position",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    R.id.tv_name -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "name click at position: $position",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    R.id.tv_university -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "university click at position: $position",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
             }
         }
         adapter.onSelectedItemChange = object : BoilrBite.OnSelectedItemChange<DummyModel> {
