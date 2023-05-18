@@ -17,7 +17,7 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
     ListAdapter<T, VH>(diffCallback) {
 
     /**
-    Companion object to provide a factory method to create instances of BoilrBite adapter.
+    * Companion object to provide a factory method to create instances of BoilrBite adapter.
      */
 
     companion object {
@@ -26,7 +26,7 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
          * Creates an adapter for use in a RecyclerView with the BoilrBite library.
          * @param items The list of items to be displayed in the RecyclerView.
          * @param layoutResId The resource ID of the layout to be inflated for each item view.
-         * @param ids The set of resource IDs for views in the layout that should have click listeners attached to them.
+         * @param clickableViewIds The set of resource IDs for views in the layout that should have click listeners attached to them.
          * @param compareItems A lambda expression that compares two items and returns true if they are equal.
          * @param compareContents A lambda expression that compares the contents of two items and returns true if they are equal.
          * @param block A lambda expression that binds the data from an item to the views in its corresponding ViewHolder.

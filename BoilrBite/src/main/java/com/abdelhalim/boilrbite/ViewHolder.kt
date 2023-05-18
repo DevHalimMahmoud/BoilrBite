@@ -6,16 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 /**
-
-ViewHolder is an abstract ViewHolder class for RecyclerView.
-
-@property selected holds the current position of the selected item.
-
-@param <H> specifies the type of data that this ViewHolder can bind to.
-
-@constructor creates a new instance of the ViewHolder with the specified parameters.
-
-@constructor overload method creates a new instance of the ViewHolder with the specified parameters.
+ * ViewHolder is an abstract ViewHolder class for RecyclerView.
+ * @property selected holds the current position of the selected item.
+ * @param <H> specifies the type of data that this ViewHolder can bind to.
+ * @constructor creates a new instance of the ViewHolder with the specified parameters.
+ * @constructor overload method creates a new instance of the ViewHolder with the specified parameters.
  */
 abstract class ViewHolder<H : Any>(
     view: View,
@@ -34,7 +29,6 @@ abstract class ViewHolder<H : Any>(
 
     /**
      * Binds an item to the view held by this ViewHolder instance.
-     *
      * @param item the item to be bound to the ViewHolder's View.
      * @param onTClickListener a listener for click events on items.
      */

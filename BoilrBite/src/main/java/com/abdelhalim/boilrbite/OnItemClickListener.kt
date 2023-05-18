@@ -13,7 +13,6 @@ open class OnItemClickListener<T : Any?, V : View?> {
      * @param item The data associated with the clicked item.
      * @param view The view that was clicked.
      * @param position The position of the clicked item in the RecyclerView.
-     * @param clickType The type of click that occurred.
      */
     open fun onItemClicked(
         item: T? = null, view: V? = null, position: Int = -1
