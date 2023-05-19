@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         val adapter = BoilrBite.createBoilrBiteAdapter(
             items = mutableListOf<DummyModel>(),
             layoutResId = R.layout.item,
+            clickableViewIds = setOf(R.id.btn_dummy, R.id.tv_name, R.id.tv_university),
             compareItems = { old, new -> old == new },
             compareContents = { old, new -> old.id == new.id },
             bind = { view, item ->
