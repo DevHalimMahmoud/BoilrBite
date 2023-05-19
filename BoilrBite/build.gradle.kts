@@ -62,11 +62,14 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.abdomi7"
             artifactId = "BoilrBite"
-            version = "1.0.0"
+            version = "1.0.1"
 
             afterEvaluate {
                 from(components["release"])
             }
         }
+    }
+    repositories {
+        mavenLocal()
     }
 }
