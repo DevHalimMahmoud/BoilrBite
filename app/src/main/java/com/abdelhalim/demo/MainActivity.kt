@@ -18,14 +18,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(
-            this,
-            R.layout.activity_main
+            this, R.layout.activity_main
         )
 
         val adapter = BoilrBite.createBoilrBiteAdapter(
             items = mutableListOf<DummyModel>(),
             layoutResId = R.layout.item,
-            clickableViewIds = setOf(R.id.btn_dummy, R.id.tv_name, R.id.tv_university),
             compareItems = { old, new -> old == new },
             compareContents = { old, new -> old.id == new.id },
             block = { view, item ->
@@ -36,33 +34,30 @@ class MainActivity : AppCompatActivity() {
         binding.rvMain.adapter = adapter
 
         val dummyModels = listOf(
-            DummyModel(1, "Abdelhalim", "Ain Shams University"),
-            DummyModel(2, "Hassan", "Ain Shams University"),
-            DummyModel(3, "Ahmed", "Ain Shams University"),
-            DummyModel(4, "Mahmoud", "Ain Shams University"),
-            DummyModel(5, "Ali", "Ain Shams University"),
-            DummyModel(6, "John", "Ain Shams University"),
-            DummyModel(7, "Alex", "Ain Shams University"),
-            DummyModel(8, "Karem", "Ain Shams University"),
-            DummyModel(9, "Mohamed", "Ain Shams University"),
-            DummyModel(10, "Ali", "Ain Shams University"),
-            DummyModel(11, "Omar", "Ain Shams University"),
-            DummyModel(12, "Ola", "Ain Shams University"),
-            DummyModel(13, "Sagda", "Ain Shams University"),
-            DummyModel(14, "Alaa", "Ain Shams University"),
-            DummyModel(15, "Kamal", "Ain Shams University"),
-            DummyModel(16, "Abanob", "Ain Shams University"),
-            DummyModel(17, "Moris", "Ain Shams University"),
-            DummyModel(18, "Misho", "Ain Shams University"),
-            DummyModel(20, "Nebula", "Ain Shams University"),
-            DummyModel(19, "Samar", "Ain Shams University"),
-            DummyModel(20, "Nebula", "Ain Shams University")
+            DummyModel(1, "Abdelhalim", "University of Toronto"),
+            DummyModel(2, "Hassan", "Harvard University"),
+            DummyModel(3, "Ahmed", "Stanford University"),
+            DummyModel(4, "Mahmoud", "Massachusetts Institute of Technology"),
+            DummyModel(5, "Ali", "California Institute of Technology"),
+            DummyModel(6, "John", "Princeton University"),
+            DummyModel(7, "Alex", "Yale University"),
+            DummyModel(8, "Karem", "Columbia University"),
+            DummyModel(9, "Mohamed", "Duke University"),
+            DummyModel(10, "Ali", "University of Cambridge"),
+            DummyModel(11, "Omar", "University of Oxford"),
+            DummyModel(12, "Ola", "University of California, Berkeley"),
+            DummyModel(13, "Sagda", "University of Michigan"),
+            DummyModel(14, "Alaa", "University of Pennsylvania"),
+            DummyModel(15, "Kamal", "Cornell University"),
+            DummyModel(16, "Abanob", "Carnegie Mellon University"),
+            DummyModel(17, "Moris", "New York University"),
+            DummyModel(18, "Misho", "University of California, Los Angeles"),
+            DummyModel(19, "Samar", "Imperial College London"),
+            DummyModel(20, "Nebula", "ETH Zurich")
         )
-        val start = System.currentTimeMillis()
-        adapter.addOrUpdateItems(dummyModels)
-        val end = System.currentTimeMillis()
 
-        Log.d("TAG", "onCreate: ${end - start} ")
+        adapter.addOrUpdateItems(dummyModels)
+
         adapter.onItemClickListener = object : OnItemClickListener<DummyModel, View?>() {
             override fun onItemClicked(view: View?, item: DummyModel, position: Int) {
                 super.onItemClicked(view, item, position)
@@ -104,10 +99,7 @@ class MainActivity : AppCompatActivity() {
         }
         adapter.onSelectedItemChange = object : BoilrBite.OnSelectedItemChange<DummyModel> {
             override fun onSelectedItemChange(
-                oldPosition: Int,
-                oldItem: DummyModel?,
-                newPosition: Int?,
-                newItem: DummyModel?
+                oldPosition: Int, oldItem: DummyModel?, newPosition: Int?, newItem: DummyModel?
             ) {
                 Toast.makeText(
                     this@MainActivity,
