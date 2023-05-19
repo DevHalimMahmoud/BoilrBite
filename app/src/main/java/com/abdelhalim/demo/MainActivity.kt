@@ -60,7 +60,6 @@ class MainActivity : AppCompatActivity() {
 
         adapter.onItemClickListener = object : OnItemClickListener<DummyModel, View?>() {
             override fun onItemClicked(view: View?, item: DummyModel, position: Int) {
-                super.onItemClicked(view, item, position)
                 when (view?.id) {
                     R.id.rv_item -> {
                         Toast.makeText(
