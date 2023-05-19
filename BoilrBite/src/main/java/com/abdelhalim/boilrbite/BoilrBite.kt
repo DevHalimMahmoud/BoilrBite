@@ -17,7 +17,7 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
     ListAdapter<T, VH>(diffCallback) {
 
     /**
-    * Companion object to provide a factory method to create instances of BoilrBite adapter.
+     * Companion object to provide a factory method to create instances of BoilrBite adapter.
      */
 
     companion object {
@@ -29,16 +29,16 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
          * @param clickableViewIds The set of resource IDs for views in the layout that should have click listeners attached to them.
          * @param compareItems A lambda expression that compares two items and returns true if they are equal.
          * @param compareContents A lambda expression that compares the contents of two items and returns true if they are equal.
-         * @param block A lambda expression that binds the data from an item to the views in its corresponding ViewHolder.
+         * @param bind A lambda expression that binds the data from an item to the views in its corresponding ViewHolder.
          * @return A new instance of BoilrBite that can be used as an adapter in a RecyclerView.
          */
         fun <I : Any> createBoilrBiteAdapter(
             items: MutableList<I>,
             @LayoutRes layoutResId: Int,
             @LayoutRes clickableViewIds: Set<Int> = emptySet(),
-            compareItems: (old: I, new: I) -> Boolean,
+            compareItems: (old: I, new: I) -> Boolean = { old, new -> old == new },
             compareContents: (old: I, new: I) -> Boolean,
-            block: (View, I) -> Unit
+            bind: (View, I) -> Unit
         ): BoilrBite<I, ViewHolder<I>> =
             object : BoilrBite<I, ViewHolder<I>>(
                 RecyclerDiffCallback(
@@ -56,7 +56,7 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
                             onTClickListener: OnItemClickListener<I, View?>?
                         ) {
                             // Bind the data from the item to the views in the ViewHolder using the provided block function.
-                            block(itemView, item)
+                            bind(itemView, item)
 
                             // Set a click listener on the item view that calls the onItemClicked method of the OnItemClickListener.
                             itemView.setOnClickListener {
@@ -232,10 +232,14 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
     }
 
     /**
-     * Interface for listening to changes in the selected item in the list.
+     * A functional interface for handling changes to the selected item in a list.
+     * This interface provides a single abstract method, onSelectedItemChange(), which is called whenever the selected item
+     * in a list changes. By implementing this interface, a client code can receive notifications about the change of selection,
+     * and take appropriate actions based on the old and new positions and items.
+     * @param I The type of items stored in the list.
      */
 
-    interface OnSelectedItemChange<I> {
+    fun interface OnSelectedItemChange<I> {
 
         /**
          * Called when the selected item in the list changes.

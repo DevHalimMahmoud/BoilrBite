@@ -2,7 +2,6 @@ package com.abdelhalim.demo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             layoutResId = R.layout.item,
             compareItems = { old, new -> old == new },
             compareContents = { old, new -> old.id == new.id },
-            block = { view, item ->
+            bind = { view, item ->
                 val binding = DataBindingUtil.bind<ItemBinding>(view)
                 binding?.tvName?.text = item.name
                 binding?.tvUniversity?.text = item.university
@@ -97,17 +96,13 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
-        adapter.onSelectedItemChange = object : BoilrBite.OnSelectedItemChange<DummyModel> {
-            override fun onSelectedItemChange(
-                oldPosition: Int, oldItem: DummyModel?, newPosition: Int?, newItem: DummyModel?
-            ) {
+        adapter.onSelectedItemChange =
+            BoilrBite.OnSelectedItemChange<DummyModel> { oldPosition, oldItem, newPosition, newItem ->
                 Toast.makeText(
                     this@MainActivity,
                     "new: " + newItem?.id.toString() + "  old: " + oldItem?.id.toString(),
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
-        }
     }
 }
