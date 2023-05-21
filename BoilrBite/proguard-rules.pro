@@ -20,4 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep, allowshrinking, allowoptimization class com.abdelhalim.boilrbite.* { *; }
+-keep, allowoptimization class com.abdelhalim.boilrbite.* { *; }
