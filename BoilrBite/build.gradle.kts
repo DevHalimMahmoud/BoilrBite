@@ -42,14 +42,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 
-    buildFeatures { dataBinding = true }
 
 }
 
@@ -62,7 +61,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.abdomi7"
             artifactId = "BoilrBite"
-            version = "1.0.5"
+            version = "1.0.6"
 
             afterEvaluate {
                 from(components["release"])
