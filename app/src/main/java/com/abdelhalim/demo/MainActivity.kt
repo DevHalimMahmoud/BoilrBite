@@ -30,6 +30,10 @@ class MainActivity : AppCompatActivity() {
                 val binding = DataBindingUtil.bind<ItemBinding>(view)
                 binding?.tvName?.text = item.name
                 binding?.tvUniversity?.text = item.university
+            },
+            onViewRecycled = { view, item ->
+                val binding = DataBindingUtil.getBinding<ItemBinding>(view)
+                binding?.unbind()
             })
         binding.rvMain.adapter = adapter
 
@@ -55,8 +59,10 @@ class MainActivity : AppCompatActivity() {
             DummyModel(19, "Samar", "Imperial College London"),
             DummyModel(20, "Nebula", "ETH Zurich")
         )
+        adapter.setItems(
+            dummyModels
+        )
 
-        adapter.addOrUpdateItems(dummyModels)
 
         adapter.onItemClickListener = object : OnItemClickListener<DummyModel, View?>() {
             override fun onItemClicked(view: View?, item: DummyModel, position: Int) {

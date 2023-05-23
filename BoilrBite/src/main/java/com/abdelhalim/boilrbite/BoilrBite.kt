@@ -19,7 +19,6 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
     /**
      * Companion object to provide a factory method to create instances of BoilrBite adapter.
      */
-
     companion object {
 
         /**
@@ -30,6 +29,9 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
          * @param compareItems A lambda expression that compares two items and returns true if they are equal.
          * @param compareContents A lambda expression that compares the contents of two items and returns true if they are equal.
          * @param bind A lambda expression that binds the data from an item to the views in its corresponding ViewHolder.
+         * @param onViewRecycled A lambda expression that is called when a View is recycled.
+         * @param onBindViewHolder A lambda expression that is called when a View is bound to an item.
+         * @param I The type of the items in the list.
          * @return A new instance of BoilrBite that can be used as an adapter in a RecyclerView.
          */
         fun <I : Any> createBoilrBiteAdapter(
@@ -38,7 +40,8 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
             @LayoutRes clickableViewIds: Set<Int> = emptySet(),
             compareItems: (old: I, new: I) -> Boolean = { old, new -> old == new },
             compareContents: (old: I, new: I) -> Boolean,
-            bind: (View, I) -> Unit
+            bind: (View, I) -> Unit,
+            onViewRecycled: (View, I) -> Unit? = { _, _ -> null }
         ): BoilrBite<I, ViewHolder<I>> =
             object : BoilrBite<I, ViewHolder<I>>(
                 RecyclerDiffCallback(
@@ -71,6 +74,27 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
                             }
                         }
                     }
+                }
+
+                /**
+                 * Called when a view previously bound to an adapter item has been recycled.
+                 * This can happen when the view is no longer visible on screen, or when the adapter is
+                 * being cleared.
+                 *
+                 * @param holder The view holder that was previously bound to the adapter item.
+                 */
+                override fun onViewRecycled(holder: ViewHolder<I>) {
+                    super.onViewRecycled(holder)
+                    onViewRecycled(holder.itemView, getItem(holder.layoutPosition))
+                }
+
+                /**
+                 * Called by RecyclerView to display the data at the specified position.
+                 * @param holder is the ViewHolder which should be updated to represent the contents of the item at the given position in the data set.
+                 * @param position is the position of the item within the adapter's data set.
+                 */
+                override fun onBindViewHolder(holder: ViewHolder<I>, position: Int) {
+                    getItem(position)?.let { holder.bind(it, onItemClickListener) }
                 }
             }
     }
@@ -113,7 +137,6 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
      * Returns the selected item from the list.
      * @return The selected item or null if no item is selected.
      */
-
     open fun getSelectedItem(): T? {
         return selected?.let { getItem(it) }
     }
@@ -123,25 +146,13 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
      * @param t is the item to search for in the list.
      * @return The index of the first occurrence of the specified item in the list, or -1 if the list does not contain the item.
      */
-
     open fun indexOf(t: T): Int {
         return currentList.indexOf(t)
     }
 
     /**
-     * Called by RecyclerView to display the data at the specified position.
-     * @param holder is the ViewHolder which should be updated to represent the contents of the item at the given position in the data set.
-     * @param position is the position of the item within the adapter's data set.
-     */
-
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        getItem(position)?.let { holder.bind(it, onItemClickListener) }
-    }
-
-    /**
      * Clears the current list by submitting an empty list to ListAdapter.
      */
-
     open fun clear() {
         submitList(emptyList())
     }
@@ -150,7 +161,6 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
      * Adds or updates multiple items to the current list while ensuring that there are no duplicates in the list.
      * @param items is a list of items to be added or updated in the list.
      */
-
     open fun addOrUpdateItems(items: List<T>) {
         if (items.isEmpty()) return // early exit
         val uniqItems = items.toSet()
@@ -172,7 +182,6 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
      * Adds or updates a single item to the current list while ensuring that there are no duplicates in the list.
      * @param item is the item to be added or updated in the list.
      */
-
     open fun addOrUpdateItem(item: T) {
         addOrUpdateItems(listOf(item))
     }
@@ -181,7 +190,6 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
      * Removes multiple items from the current list.
      * @param items is a list of items to be removed from the list.
      */
-
     open fun remove(items: List<T>) {
         val newList = currentList.toMutableList().apply { removeAll(items) }
         submitList(newList)
@@ -191,7 +199,6 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
      * Removes a single item from the current list.
      * @param item is the item to be removed from the list.
      */
-
     open fun remove(item: T) {
         val index = indexOf(item)
         if (index in 0 until itemCount) {
@@ -205,7 +212,6 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
      * Replaces the current list with a new list of items.
      * @param items is the new list of items to replace the current list.
      */
-
     open fun setItems(items: List<T>) {
         submitList(items)
     }
@@ -214,7 +220,6 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
      * Returns the position of the currently selected item in the list.
      * @return the position of the selected item or null if no item is selected.
      */
-
     open fun getSelected(): Int? {
         return selected
     }
@@ -222,7 +227,6 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
     /**
      * A private inner class that extends DiffUtil.ItemCallback to calculate the difference between two lists and update the UI accordingly.
      */
-
     private class RecyclerDiffCallback<K : Any>(
         private val compareItems: (old: K, new: K) -> Boolean,
         private val compareContents: (old: K, new: K) -> Boolean
@@ -238,7 +242,6 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
      * and take appropriate actions based on the old and new positions and items.
      * @param I The type of items stored in the list.
      */
-
     fun interface OnSelectedItemChange<I> {
 
         /**
@@ -248,7 +251,6 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
          * @param newPosition is the position of the newly selected item or null if there is no new selection.
          * @param newItem is the newly selected item or null if there is no new selection.
          */
-
         fun onSelectedItemChange(oldPosition: Int, oldItem: I?, newPosition: Int?, newItem: I?)
     }
 }
