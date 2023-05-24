@@ -24,7 +24,7 @@ BoilrBite has many powerful features, including:
 
 ### Step 1. Add the JitPack repository to your build file
 
-```
+```gradle
 	allprojects {
 		repositories {
 			...
@@ -37,7 +37,7 @@ BoilrBite has many powerful features, including:
 
 Add the following dependency to your app's build.gradle file:
 
-```
+```gradle
 dependencies {
 	        implementation 'com.github.abdomi7:BoilrBite:1.0.7'
 }
@@ -47,7 +47,7 @@ dependencies {
 
 Create an instance of BoilrBite adapter and set it to your RecyclerView:
 
-```
+```kotlin
     val adapter = BoilrBite.createBoilrBiteAdapter(
             items = mutableListOf<DummyModel>(), // List of items to be displayed
             layoutResId = R.layout.item, // Layout resource id
@@ -58,6 +58,10 @@ Create an instance of BoilrBite adapter and set it to your RecyclerView:
                 val binding = DataBindingUtil.bind<ItemBinding>(view)
                 binding?.tvName?.text = item.name
                 binding?.tvUniversity?.text = item.university
+            },
+            onViewRecycled = { view, item ->
+                val binding = DataBindingUtil.getBinding<ItemBinding>(view)
+                binding?.unbind()
             })
             
     binding.rvMain.adapter = adapter // Set the adapter to the RecyclerView
@@ -71,7 +75,7 @@ Create an instance of BoilrBite adapter and set it to your RecyclerView:
 BoilrBite provides many useful functions for data manipulation:
 
 
-```
+```kotlin
     
     adapter.setItems(listOf(DummyModel())) // Set the list of items
 
@@ -102,7 +106,7 @@ BoilrBite provides many useful functions for data manipulation:
 
 BoilrBite makes event handling easy with the following features:
 
-```
+```kotlin
         adapter.onItemClickListener = object : OnItemClickListener<DummyModel, View?>() {
             override fun onItemClicked(view: View?, item: DummyModel, position: Int) {
                 Toast.makeText(this@MainActivity, "Item clicked: $item", Toast.LENGTH_SHORT).show()

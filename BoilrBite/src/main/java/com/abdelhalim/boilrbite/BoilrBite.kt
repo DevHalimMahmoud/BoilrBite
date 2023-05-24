@@ -88,15 +88,16 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
                     onViewRecycled(holder.itemView, getItem(holder.layoutPosition))
                 }
 
-                /**
-                 * Called by RecyclerView to display the data at the specified position.
-                 * @param holder is the ViewHolder which should be updated to represent the contents of the item at the given position in the data set.
-                 * @param position is the position of the item within the adapter's data set.
-                 */
-                override fun onBindViewHolder(holder: ViewHolder<I>, position: Int) {
-                    getItem(position)?.let { holder.bind(it, onItemClickListener) }
-                }
             }
+    }
+
+    /**
+     * Called by RecyclerView to display the data at the specified position.
+     * @param holder is the ViewHolder which should be updated to represent the contents of the item at the given position in the data set.
+     * @param position is the position of the item within the adapter's data set.
+     */
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        getItem(position)?.let { holder.bind(it, onItemClickListener) }
     }
 
     private var selected: Int? = null
