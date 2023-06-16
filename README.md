@@ -39,7 +39,7 @@ Add the following dependency to your app's build.gradle file:
 
 ```gradle
 dependencies {
-	        implementation 'com.github.abdomi7:BoilrBite:1.0.7'
+	        implementation 'com.github.abdomi7:BoilrBite:1.0.8'
 }
 ```
 
