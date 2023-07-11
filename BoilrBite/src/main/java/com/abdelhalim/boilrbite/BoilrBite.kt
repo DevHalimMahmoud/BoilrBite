@@ -36,12 +36,13 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
          */
         fun <I : Any> createBoilrBiteAdapter(
             items: MutableList<I>,
-            @LayoutRes layoutResId: Int,
+            @LayoutRes layoutResIds: Set<Int>,
             @LayoutRes clickableViewIds: Set<Int> = emptySet(),
             compareItems: (old: I, new: I) -> Boolean = { old, new -> old == new },
             compareContents: (old: I, new: I) -> Boolean,
-            bind: (View, I) -> Unit,
-            onViewRecycled: (View, I) -> Unit? = { _, _ -> null }
+            bind: (view: View, item: I, viewType: Int) -> Unit,
+            onViewRecycled: (view: View, item: I, viewType: Int) -> Unit? = { _, _, _ -> null },
+            setViewType: (position: Int, item: I) -> Int = { _, _ -> 0 } // Function to determine the view type for a position
         ): BoilrBite<I, ViewHolder<I>> =
             object : BoilrBite<I, ViewHolder<I>>(
                 RecyclerDiffCallback(
@@ -53,13 +54,13 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
                     parent: ViewGroup,
                     viewType: Int
                 ): ViewHolder<I> {
-                    return object : ViewHolder<I>(parent, layoutResId, this) {
+                    return object : ViewHolder<I>(parent, layoutResIds, this, viewType) {
                         override fun bind(
                             item: I,
                             onTClickListener: OnItemClickListener<I, View?>?
                         ) {
                             // Bind the data from the item to the views in the ViewHolder using the provided block function.
-                            bind(itemView, item)
+                            bind(itemView, item, viewType)
 
                             // Set a click listener on the item view that calls the onItemClicked method of the OnItemClickListener.
                             itemView.setOnClickListener {
@@ -68,11 +69,12 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
 
                             // Set click listeners on any additional views in the item layout that were specified by their resource IDs in the ids set.
                             clickableViewIds.forEach { id ->
-                                itemView.findViewById<View>(id).setOnClickListener {
+                                itemView.findViewById<View>(id)?.setOnClickListener {
                                     onTClickListener?.onItemClicked(item, it, layoutPosition)
                                 }
                             }
                         }
+
                     }
                 }
 
@@ -85,7 +87,20 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
                  */
                 override fun onViewRecycled(holder: ViewHolder<I>) {
                     super.onViewRecycled(holder)
-                    onViewRecycled(holder.itemView, getItem(holder.layoutPosition))
+                    onViewRecycled(
+                        holder.itemView,
+                        getItem(holder.layoutPosition), holder.itemViewType
+                    )
+                }
+
+                /**
+                 * Returns the view type hash code for a given position.
+                 * @param position The position of the item in the list.
+                 * @return The hash code of the view type for the item at the given position.
+                 */
+                override fun getItemViewType(position: Int): Int {
+                    val item = getItem(position)
+                    return setViewType(position, item).hashCode()
                 }
 
             }

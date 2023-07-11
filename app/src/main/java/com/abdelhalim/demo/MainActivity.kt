@@ -1,14 +1,15 @@
 package com.abdelhalim.demo
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.abdelhalim.boilrbite.BoilrBite
 import com.abdelhalim.boilrbite.OnItemClickListener
-import com.abdelhalim.demo.databinding.ItemBinding
 import com.abdelhalim.demo.databinding.ActivityMainBinding
+import com.abdelhalim.demo.databinding.Item1Binding
+import com.abdelhalim.demo.databinding.Item2Binding
 
 
 lateinit var binding: ActivityMainBinding
@@ -22,19 +23,54 @@ class MainActivity : AppCompatActivity() {
 
         val adapter = BoilrBite.createBoilrBiteAdapter(
             items = mutableListOf<DummyModel>(),
-            layoutResId = R.layout.item,
+            layoutResIds = setOf<Int>(R.layout.item1, R.layout.item2),
             clickableViewIds = setOf(R.id.btn_dummy, R.id.tv_name, R.id.tv_university),
-            compareItems = { old, new -> old == new },
             compareContents = { old, new -> old.id == new.id },
-            bind = { view, item ->
-                val binding = DataBindingUtil.bind<ItemBinding>(view)
-                binding?.tvName?.text = item.name
-                binding?.tvUniversity?.text = item.university
+            bind = { view, item, viewType ->
+
+                when (viewType) {
+                    R.layout.item1 -> {
+                        val binding = DataBindingUtil.bind<Item1Binding>(view)
+                        binding?.tvName?.text = item.name
+                        binding?.tvUniversity?.text = item.university
+
+                    }
+
+                    R.layout.item2 -> {
+                        val binding = DataBindingUtil.bind<Item2Binding>(view)
+                        binding?.tvName?.text = item.name
+                    }
+
+                    else -> {
+                        Toast.makeText(this, "ViewType not found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
             },
-            onViewRecycled = { view, item ->
-                val binding = DataBindingUtil.getBinding<ItemBinding>(view)
-                binding?.unbind()
-            })
+            onViewRecycled = { view, item, viewType ->
+                when (viewType) {
+                    R.layout.item1 -> {
+                        DataBindingUtil.getBinding<Item1Binding>(view)?.unbind()
+                    }
+
+                    R.layout.item2 -> {
+                        DataBindingUtil.getBinding<Item2Binding>(view)?.unbind()
+                    }
+
+                    else -> {
+                        Toast.makeText(this, "ViewType not found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            },
+            setViewType = { position, item ->
+                when (position % 2) {
+                    0 -> R.layout.item1
+                    else -> R.layout.item2
+                }
+            },
+
+
+            )
         binding.rvMain.adapter = adapter
 
         val dummyModels = listOf(

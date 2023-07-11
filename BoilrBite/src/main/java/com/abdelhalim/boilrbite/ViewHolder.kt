@@ -19,11 +19,15 @@ abstract class ViewHolder<H : Any>(
 
     constructor(
         parent: ViewGroup,
-        layoutRes: Int,
-        adapter: BoilrBite<H, *>
+        layoutRes: Set<Int>,
+        adapter: BoilrBite<H, *>,
+        viewType: Int
     ) : this(
-        LayoutInflater.from(parent.context).inflate(layoutRes, parent, false), adapter
+
+        LayoutInflater.from(parent.context)
+            .inflate(layoutRes.find { it == viewType } ?: 0, parent, false), adapter
     )
+
 
 //    lateinit var item: H
 
