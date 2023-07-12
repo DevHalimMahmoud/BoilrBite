@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
                     R.layout.item2 -> {
                         val binding = DataBindingUtil.bind<Item2Binding>(view)
-                        binding?.tvName?.text = item.name
+                        binding?.tvName2?.text = item.name
                     }
 
                     else -> {

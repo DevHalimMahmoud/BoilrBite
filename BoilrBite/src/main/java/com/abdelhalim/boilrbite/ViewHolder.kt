@@ -25,7 +25,7 @@ abstract class ViewHolder<H : Any>(
     ) : this(
 
         LayoutInflater.from(parent.context)
-            .inflate(layoutRes.find { it == viewType } ?: 0, parent, false), adapter
+            .inflate(layoutRes.find { it == viewType } ?: layoutRes.first(), parent, false), adapter
     )
 
 

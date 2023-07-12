@@ -42,7 +42,7 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
             compareContents: (old: I, new: I) -> Boolean,
             bind: (view: View, item: I, viewType: Int) -> Unit,
             onViewRecycled: (view: View, item: I, viewType: Int) -> Unit? = { _, _, _ -> null },
-            setViewType: (position: Int, item: I) -> Int = { _, _ -> 0 } // Function to determine the view type for a position
+            setViewType: (position: Int, item: I) -> Int = { _, _ -> layoutResIds.first() } // Function to determine the view type for a position
         ): BoilrBite<I, ViewHolder<I>> =
             object : BoilrBite<I, ViewHolder<I>>(
                 RecyclerDiffCallback(
