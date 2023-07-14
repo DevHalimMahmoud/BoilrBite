@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         val adapter = BoilrBite.createBoilrBiteAdapter(
             items = mutableListOf<DummyModel>(),
-            layoutResIds = setOf<Int>(R.layout.item1, R.layout.item2),
+            layoutResIds = setOf(R.layout.item1, R.layout.item2),
             clickableViewIds = setOf(R.id.btn_dummy, R.id.tv_name, R.id.tv_university),
             compareContents = { old, new -> old.id == new.id },
             bind = { view, item, viewType ->
@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
                         val binding = DataBindingUtil.bind<Item1Binding>(view)
                         binding?.tvName?.text = item.name
                         binding?.tvUniversity?.text = item.university
-
                     }
 
                     R.layout.item2 -> {
@@ -45,7 +44,6 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this, "ViewType not found", Toast.LENGTH_SHORT).show()
                     }
                 }
-
             },
             onViewRecycled = { view, item, viewType ->
                 when (viewType) {
@@ -67,10 +65,8 @@ class MainActivity : AppCompatActivity() {
                     0 -> R.layout.item1
                     else -> R.layout.item2
                 }
-            },
-
-
-            )
+            }
+        )
         binding.rvMain.adapter = adapter
 
         val dummyModels = listOf(
@@ -102,6 +98,7 @@ class MainActivity : AppCompatActivity() {
 
         adapter.onItemClickListener = object : OnItemClickListener<DummyModel, View?>() {
             override fun onItemClicked(view: View?, item: DummyModel, position: Int) {
+                adapter.setSelected(position)
                 when (view?.id) {
                     R.id.rv_item -> {
                         Toast.makeText(
@@ -139,7 +136,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         adapter.onSelectedItemChange =
-            BoilrBite.OnSelectedItemChange<DummyModel> { oldPosition, oldItem, newPosition, newItem ->
+            BoilrBite.OnSelectedItemChange { oldPosition, oldItem, newPosition, newItem ->
                 Toast.makeText(
                     this@MainActivity,
                     "new: " + newItem?.id.toString() + "  old: " + oldItem?.id.toString(),

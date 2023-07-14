@@ -24,14 +24,13 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
         /**
          * Creates an adapter for use in a RecyclerView with the BoilrBite library.
          * @param items The list of items to be displayed in the RecyclerView.
-         * @param layoutResId The resource ID of the layout to be inflated for each item view.
+         * @param layoutResIds The resource ID of the layout to be inflated for each item view.
          * @param clickableViewIds The set of resource IDs for views in the layout that should have click listeners attached to them.
          * @param compareItems A lambda expression that compares two items and returns true if they are equal.
          * @param compareContents A lambda expression that compares the contents of two items and returns true if they are equal.
          * @param bind A lambda expression that binds the data from an item to the views in its corresponding ViewHolder.
          * @param onViewRecycled A lambda expression that is called when a View is recycled.
-         * @param onBindViewHolder A lambda expression that is called when a View is bound to an item.
-         * @param I The type of the items in the list.
+         * @param setViewType A lambda expression that is called to determine the view type for a position.
          * @return A new instance of BoilrBite that can be used as an adapter in a RecyclerView.
          */
         fun <I : Any> createBoilrBiteAdapter(
@@ -42,7 +41,7 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
             compareContents: (old: I, new: I) -> Boolean,
             bind: (view: View, item: I, viewType: Int) -> Unit,
             onViewRecycled: (view: View, item: I, viewType: Int) -> Unit? = { _, _, _ -> null },
-            setViewType: (position: Int, item: I) -> Int = { _, _ -> layoutResIds.first() } // Function to determine the view type for a position
+            setViewType: (position: Int, item: I) -> Int = { _, _ -> layoutResIds.first() }
         ): BoilrBite<I, ViewHolder<I>> =
             object : BoilrBite<I, ViewHolder<I>>(
                 RecyclerDiffCallback(

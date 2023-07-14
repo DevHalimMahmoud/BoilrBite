@@ -17,6 +17,13 @@ abstract class ViewHolder<H : Any>(
     private val adapter: BoilrBite<H, *>
 ) : RecyclerView.ViewHolder(view) {
 
+    /**
+     * This constructor is used when the ViewHolder is created from the adapter.
+     * @param parent the parent ViewGroup.
+     * @param layoutRes the set of layout resource ids of the views to be inflated.
+     * @param adapter the adapter that created this ViewHolder.
+     * @param viewType the type of the view to be inflated.
+     */
     constructor(
         parent: ViewGroup,
         layoutRes: Set<Int>,
@@ -40,10 +47,9 @@ abstract class ViewHolder<H : Any>(
 
     /**
      * Gets the currently selected item position.
-     *
      * @return the position of the currently selected item, or null if no item is selected.
      */
-    var selected: Int?
+    private var selected: Int?
         get() = adapter.getSelected()
         set(selected) {
             setSelected(selected)
@@ -51,7 +57,6 @@ abstract class ViewHolder<H : Any>(
 
     /**
      * Sets the selected item position and notifies listeners when it changes.
-     *
      * @param selected the position of the selected item.
      * @param revers whether to deselect the item if it is already selected.
      */
