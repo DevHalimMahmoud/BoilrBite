@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.abdelhalim.boilrbite"
-    compileSdk = 33
+    compileSdk = 34
 
     publishing {
         singleVariant("release") {
@@ -18,7 +18,6 @@ android {
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
