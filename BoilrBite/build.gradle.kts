@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.abdelhalim.boilrbite"
-    compileSdk = 34
+    compileSdk = 33
 
     publishing {
         singleVariant("release") {
@@ -59,7 +59,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.abdomi7"
             artifactId = "BoilrBite"
-            version = "1.0.12"
+            version = "1.0.13"
 
             afterEvaluate {
                 from(components["release"])

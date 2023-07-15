@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.abdelhalim.demo"
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.abdelhalim.demo"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -36,11 +36,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 
     buildFeatures { dataBinding = true }
