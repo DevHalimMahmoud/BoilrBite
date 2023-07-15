@@ -19,6 +19,8 @@ BoilrBite has many powerful features, including:
   components.
 * Selected Item Callbacks: onSelectedItemChanged callback to listen for changes in the selected item
 * Easy Data Manipulation: addOrUpdateItems method to add or update items in the list.
+* Support for Multiple View Types: BoilerBite supports multiple view types, which allows you to
+  display different types of items in the same list.
 
 ## Usage
 
@@ -38,9 +40,9 @@ BoilrBite has many powerful features, including:
 Add the following dependency to your app's build.gradle file:
 
 ```gradle
-dependencies {
-	        implementation 'com.github.abdomi7:BoilrBite:1.0.8'
-}
+    dependencies {
+	        implementation 'com.github.abdomi7:BoilrBite:1.0.9'
+    }
 ```
 
 ### Step 3: Start using BoilrBite
@@ -49,24 +51,33 @@ Create an instance of BoilrBite adapter and set it to your RecyclerView:
 
 ```kotlin
     val adapter = BoilrBite.createBoilrBiteAdapter(
-    items = mutableListOf<DummyModel>(), // List of items to be displayed
-    layoutResId = R.layout.item, // Layout resource id
-    clickableViewIds = setOf(
-        R.id.btn_dummy,
-        R.id.tv_name,
-        R.id.tv_university
-    ), // Set of clickable view ids
-    compareItems = { old, new -> old == new }, // Compare items to check for changes
-    compareContents = { old, new -> old.id == new.id }, // Compare contents to check for changes
-    bind = { view, item -> // Bind the item to the view
-        val binding = DataBindingUtil.bind<ItemBinding>(view)
-        binding?.tvName?.text = item.name
-        binding?.tvUniversity?.text = item.university
+    items = mutableListOf<DummyModel>(),
+    layoutResIds = setOf(R.layout.item1, R.layout.item2),
+    clickableViewIds = setOf(R.id.btn_dummy, R.id.tv_name, R.id.tv_university),
+    compareContents = { old, new -> old.id == new.id },
+    bind = { view, item, viewType ->
+        when (viewType) {
+            R.layout.item1 -> {
+                val binding = DataBindingUtil.bind<Item1Binding>(view)
+                binding?.tvName?.text = item.name
+                binding?.tvUniversity?.text = item.university
+            }
+            R.layout.item2 -> {
+                val binding = DataBindingUtil.bind<Item2Binding>(view)
+                binding?.tvName2?.text = item.name
+            }
+            else -> {
+                Toast.makeText(this, "ViewType not found", Toast.LENGTH_SHORT).show()
+            }
+        }
     },
-    onViewRecycled = { view, item ->
-        val binding = DataBindingUtil.getBinding<ItemBinding>(view)
-        binding?.unbind()
-    })
+    setViewType = { position, item ->
+        when (position % 2) {
+            0 -> R.layout.item1
+            else -> R.layout.item2
+        }
+    }
+)
 
 binding.rvMain.adapter = adapter // Set the adapter to the RecyclerView
 
@@ -86,22 +97,17 @@ adapter.addOrUpdateItems(listOf(DummyModel())) // Add or update items in the lis
 
 adapter.addOrUpdateItem(DummyModel()) // Add or update a single item in the list
 
-adapter.clearItems() // Clear all items in the list
-
-adapter.setSelectedItem(0) // Set the selected item
+adapter.setSelected(0) // Set the selected item
 
 adapter.getSelected() // Get the selected item position
 
 adapter.getSelectedItem() // Get the selected item
 
-adapter.removeItem(0) // Remove item at index 0
-
-adapter.removeItems() // Remove items from the list
+adapter.remove() // Remove item
 
 adapter.clear() // Clear the list
 
 adapter.indexOf(DummyModel()) // Get the index of an item
-
 
 ```
 
@@ -134,5 +140,6 @@ BoilrBite is a lightweight and easy-to-use library that simplifies the developme
 implementing a RecyclerView in your Android app. By reducing boilerplate code and providing an
 intuitive API, it allows you to focus on building great user experiences. Try it out today and see
 how it can streamline your RecyclerView development process.
+
 
 

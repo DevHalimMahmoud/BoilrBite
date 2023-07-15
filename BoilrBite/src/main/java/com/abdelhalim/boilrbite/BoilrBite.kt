@@ -224,6 +224,18 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
     }
 
     /**
+     * Removes an item from the current list at the specified position.
+     * @param position is the position of the item to be removed from the list.
+     */
+    open fun remove(position: Int) {
+        if (position in 0 until itemCount) {
+            val newList = currentList.toMutableList().apply { removeAt(position) }
+            submitList(newList)
+            notifyItemRemoved(position)
+        }
+    }
+
+    /**
      * Replaces the current list with a new list of items.
      * @param items is the new list of items to replace the current list.
      */
