@@ -41,7 +41,7 @@ Add the following dependency to your app's build.gradle file:
 
 ```gradle
     dependencies {
-	        implementation 'com.github.abdomi7:BoilrBite:1.0.13'
+	        implementation 'com.github.abdomi7:BoilrBite:1.0.14'
     }
 ```
 
@@ -132,6 +132,12 @@ adapter.onSelectedItemChange =
         ).show()
     } // Set the selected item change listener
 
+```
+
+# proguard-rules.pro
+
+```proguard
+  -keep class com.abdelhalim.boilrbite.* { *; }
 ```
 
 ## Conclusion
