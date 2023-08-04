@@ -2,7 +2,6 @@ package com.abdelhalim.boilrbite
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 
@@ -16,50 +15,75 @@ import androidx.recyclerview.widget.ListAdapter
 abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.ItemCallback<T>) :
     ListAdapter<T, VH>(diffCallback) {
 
-    /**
-     * Companion object to provide a factory method to create instances of BoilrBite adapter.
-     */
-    companion object {
+    class Builder<I : Any> {
+        private var items: MutableList<I>? = null
+        private var layoutResIds: Set<Int>? = null
+        private var clickableViewIds: Set<Int> = emptySet()
+        private var compareItems: ((old: I, new: I) -> Boolean) = { old, new -> old == new }
+        private var compareContents: ((old: I, new: I) -> Boolean)? = null
+        private var bind: ((view: View, item: I, viewType: Int) -> Unit)? = null
+        private var onViewRecycled: ((view: View, item: I, viewType: Int) -> Unit?)? = null
+        private var setViewType: ((position: Int, item: I) -> Int)? = null
 
-        /**
-         * Creates an adapter for use in a RecyclerView with the BoilrBite library.
-         * @param items The list of items to be displayed in the RecyclerView.
-         * @param layoutResIds The resource ID of the layout to be inflated for each item view.
-         * @param clickableViewIds The set of resource IDs for views in the layout that should have click listeners attached to them.
-         * @param compareItems A lambda expression that compares two items and returns true if they are equal.
-         * @param compareContents A lambda expression that compares the contents of two items and returns true if they are equal.
-         * @param bind A lambda expression that binds the data from an item to the views in its corresponding ViewHolder.
-         * @param onViewRecycled A lambda expression that is called when a View is recycled.
-         * @param setViewType A lambda expression that is called to determine the view type for a position.
-         * @return A new instance of BoilrBite that can be used as an adapter in a RecyclerView.
-         */
-        fun <I : Any> createBoilrBiteAdapter(
-            items: MutableList<I>,
-            @LayoutRes layoutResIds: Set<Int>,
-            @LayoutRes clickableViewIds: Set<Int> = emptySet(),
-            compareItems: (old: I, new: I) -> Boolean = { old, new -> old == new },
-            compareContents: (old: I, new: I) -> Boolean,
-            bind: (view: View, item: I, viewType: Int) -> Unit,
-            onViewRecycled: (view: View, item: I, viewType: Int) -> Unit? = { _, _, _ -> null },
-            setViewType: (position: Int, item: I) -> Int = { _, _ -> layoutResIds.first() }
-        ): BoilrBite<I, ViewHolder<I>> =
-            object : BoilrBite<I, ViewHolder<I>>(
+        fun items(items: MutableList<I>): Builder<I> {
+            this.items = items
+            return this
+        }
+
+        fun layoutResIds(layoutResIds: Set<Int>): Builder<I> {
+            this.layoutResIds = layoutResIds
+            return this
+        }
+
+        fun clickableViewIds(clickableViewIds: Set<Int>): Builder<I> {
+            this.clickableViewIds = clickableViewIds
+            return this
+        }
+
+        fun compareItems(compareItems: (old: I, new: I) -> Boolean): Builder<I> {
+            this.compareItems = compareItems
+            return this
+        }
+
+        fun compareContents(compareContents: (old: I, new: I) -> Boolean): Builder<I> {
+            this.compareContents = compareContents
+            return this
+        }
+
+        fun bind(bind: (view: View, item: I, viewType: Int) -> Unit): Builder<I> {
+            this.bind = bind
+            return this
+        }
+
+        fun onViewRecycled(onViewRecycled: (view: View, item: I, viewType: Int) -> Unit?): Builder<I> {
+            this.onViewRecycled = onViewRecycled
+            return this
+        }
+
+        fun setViewType(setViewType: (position: Int, item: I) -> Int): Builder<I> {
+            this.setViewType = setViewType
+            return this
+        }
+
+        fun build(): BoilrBite<I, ViewHolder<I>> {
+
+            val adapter = object : BoilrBite<I, ViewHolder<I>>(
                 RecyclerDiffCallback(
                     compareItems,
-                    compareContents
+                    compareContents!!
                 )
             ) {
                 override fun onCreateViewHolder(
                     parent: ViewGroup,
                     viewType: Int
                 ): ViewHolder<I> {
-                    return object : ViewHolder<I>(parent, layoutResIds, this, viewType) {
+                    return object : ViewHolder<I>(parent, layoutResIds!!, this, viewType) {
                         override fun bind(
                             item: I,
                             onTClickListener: OnItemClickListener<I, View?>?
                         ) {
                             // Bind the data from the item to the views in the ViewHolder using the provided block function.
-                            bind(itemView, item, viewType)
+                            bind?.let { it(itemView, item, viewType) }
 
                             // Set a click listener on the item view that calls the onItemClicked method of the OnItemClickListener.
                             itemView.setOnClickListener {
@@ -86,7 +110,7 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
                  */
                 override fun onViewRecycled(holder: ViewHolder<I>) {
                     super.onViewRecycled(holder)
-                    onViewRecycled(
+                    onViewRecycled?.invoke(
                         holder.itemView,
                         getItem(holder.layoutPosition), holder.itemViewType
                     )
@@ -99,10 +123,15 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
                  */
                 override fun getItemViewType(position: Int): Int {
                     val item = getItem(position)
-                    return setViewType(position, item).hashCode()
+                    return setViewType?.let { it(position, item) }.hashCode()
                 }
 
             }
+
+            adapter.setItems(items ?: mutableListOf())
+
+            return adapter
+        }
     }
 
     /**

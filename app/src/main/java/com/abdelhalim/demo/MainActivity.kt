@@ -15,58 +15,56 @@ import com.abdelhalim.demo.databinding.Item2Binding
 lateinit var binding: ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    val adapter = BoilrBite.Builder<DummyModel>().items(mutableListOf())
+        .layoutResIds(setOf(R.layout.item1, R.layout.item2))
+        .clickableViewIds(setOf(R.id.btn_dummy, R.id.tv_name, R.id.tv_university))
+        .compareContents { old, new -> old.id == new.id }
+        .compareItems { old, new -> old == new }
+        .bind { view, item, viewType ->
+            when (viewType) {
+                R.layout.item1 -> {
+                    val binding = DataBindingUtil.bind<Item1Binding>(view)
+                    binding?.tvName?.text = item.name
+                    binding?.tvUniversity?.text = item.university
+                }
+
+                R.layout.item2 -> {
+                    val binding = DataBindingUtil.bind<Item2Binding>(view)
+                    binding?.tvName2?.text = item.name
+                }
+
+                else -> {
+                    Toast.makeText(this, "ViewType not found", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.onViewRecycled { view, item, viewType ->
+            when (viewType) {
+                R.layout.item1 -> {
+                    DataBindingUtil.getBinding<Item1Binding>(view)?.unbind()
+                }
+
+                R.layout.item2 -> {
+                    DataBindingUtil.getBinding<Item2Binding>(view)?.unbind()
+                }
+
+                else -> {
+                    Toast.makeText(this, "ViewType not found", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.setViewType { position, item ->
+            when (position % 2) {
+                0 -> R.layout.item1
+                else -> R.layout.item2
+            }
+        }.build()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(
             this, R.layout.activity_main
         )
 
-        val adapter = BoilrBite.createBoilrBiteAdapter(
-            items = mutableListOf<DummyModel>(),
-            layoutResIds = setOf(R.layout.item1, R.layout.item2),
-            clickableViewIds = setOf(R.id.btn_dummy, R.id.tv_name, R.id.tv_university),
-            compareContents = { old, new -> old.id == new.id },
-            bind = { view, item, viewType ->
-
-                when (viewType) {
-                    R.layout.item1 -> {
-                        val binding = DataBindingUtil.bind<Item1Binding>(view)
-                        binding?.tvName?.text = item.name
-                        binding?.tvUniversity?.text = item.university
-                    }
-
-                    R.layout.item2 -> {
-                        val binding = DataBindingUtil.bind<Item2Binding>(view)
-                        binding?.tvName2?.text = item.name
-                    }
-
-                    else -> {
-                        Toast.makeText(this, "ViewType not found", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            },
-            onViewRecycled = { view, item, viewType ->
-                when (viewType) {
-                    R.layout.item1 -> {
-                        DataBindingUtil.getBinding<Item1Binding>(view)?.unbind()
-                    }
-
-                    R.layout.item2 -> {
-                        DataBindingUtil.getBinding<Item2Binding>(view)?.unbind()
-                    }
-
-                    else -> {
-                        Toast.makeText(this, "ViewType not found", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            },
-            setViewType = { position, item ->
-                when (position % 2) {
-                    0 -> R.layout.item1
-                    else -> R.layout.item2
-                }
-            }
-        )
         binding.rvMain.adapter = adapter
 
         val dummyModels = listOf(
