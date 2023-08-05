@@ -15,6 +15,11 @@ import androidx.recyclerview.widget.ListAdapter
 abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.ItemCallback<T>) :
     ListAdapter<T, VH>(diffCallback) {
 
+
+    /**
+     * Builder class for creating a BoilrBiteAdapter instance.
+     * @param <I> the type of items in the adapter
+     */
     class Builder<I : Any> {
         private var items: MutableList<I>? = null
         private var layoutResIds: Set<Int>? = null
@@ -25,62 +30,95 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
         private var onViewRecycled: ((view: View, item: I, viewType: Int) -> Unit?)? = null
         private var setViewType: ((position: Int, item: I) -> Int)? = null
 
+        /**
+         * Sets the items for the adapter.
+         * @param items the list of items to be displayed in the adapter
+         * @return the builder instance */
         fun items(items: MutableList<I>): Builder<I> {
             this.items = items
             return this
         }
 
+        /**
+         * Sets the layout resource IDs.
+         * @param layoutResIds the set of layout resource IDs for the adapter items
+         * @return the builder instance */
         fun layoutResIds(layoutResIds: Set<Int>): Builder<I> {
             this.layoutResIds = layoutResIds
             return this
         }
 
+        /**
+         * Sets the clickable view resource IDs.
+         * @param clickableViewIds the set of clickable view resource IDs
+         * @return the builder instance */
         fun clickableViewIds(clickableViewIds: Set<Int>): Builder<I> {
             this.clickableViewIds = clickableViewIds
             return this
         }
 
+
+        /**
+         * Sets the function to compare two items for equality.
+         * @param compareItems the function to compare two items
+         * @return the builder instance */
         fun compareItems(compareItems: (old: I, new: I) -> Boolean): Builder<I> {
             this.compareItems = compareItems
             return this
         }
 
+        /**
+         * Sets the function to compare the content of two items.
+         * @param compareContents the function to compare the content of two items
+         * @return the builder instance */
         fun compareContents(compareContents: (old: I, new: I) -> Boolean): Builder<I> {
             this.compareContents = compareContents
             return this
         }
 
+        /**
+         * Sets the function to bind the item data to the views in the ViewHolder.
+         * @param bind the function to bind the item data to the views
+         * @return the builder instance */
         fun bind(bind: (view: View, item: I, viewType: Int) -> Unit): Builder<I> {
             this.bind = bind
             return this
         }
 
+        /**
+         * Sets the function to handle the recycling of a view previously bound to an adapter item.
+         * @param onViewRecycled the function to handle recycling of a view
+         * @return the builder instance */
         fun onViewRecycled(onViewRecycled: (view: View, item: I, viewType: Int) -> Unit?): Builder<I> {
             this.onViewRecycled = onViewRecycled
             return this
         }
 
+        /**
+         * Sets the function to determine the view type for a given position.
+         * @param setViewType the function to determine the view type
+         * @return the builder instance */
         fun setViewType(setViewType: (position: Int, item: I) -> Int): Builder<I> {
             this.setViewType = setViewType
             return this
         }
 
+        /**
+         * Builds and returns the BoilrBiteAdapter instance with the specified configurations.
+         * @return the BoilrBiteAdapter instance */
         fun build(): BoilrBite<I, ViewHolder<I>> {
 
             val adapter = object : BoilrBite<I, ViewHolder<I>>(
                 RecyclerDiffCallback(
-                    compareItems,
-                    compareContents!!
+                    compareItems, compareContents!!
                 )
             ) {
                 override fun onCreateViewHolder(
-                    parent: ViewGroup,
-                    viewType: Int
+                    parent: ViewGroup, viewType: Int
                 ): ViewHolder<I> {
                     return object : ViewHolder<I>(parent, layoutResIds!!, this, viewType) {
                         override fun bind(
-                            item: I,
-                            onTClickListener: OnItemClickListener<I, View?>?
+                            item: I, onTClickListener: OnItemClickListener<I, View?>?
                         ) {
                             // Bind the data from the item to the views in the ViewHolder using the provided block function.
                             bind?.let { it(itemView, item, viewType) }
@@ -111,8 +149,7 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
                 override fun onViewRecycled(holder: ViewHolder<I>) {
                     super.onViewRecycled(holder)
                     onViewRecycled?.invoke(
-                        holder.itemView,
-                        getItem(holder.layoutPosition), holder.itemViewType
+                        holder.itemView, getItem(holder.layoutPosition), holder.itemViewType
                     )
                 }
 
@@ -155,9 +192,7 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
      * @return Returns true if an item was selected, false otherwise.
      */
     fun setSelected(
-        selected: Int,
-        reverse: Boolean = true,
-        callback: ((T?) -> Unit)? = null
+        selected: Int, reverse: Boolean = true, callback: ((T?) -> Unit)? = null
     ): Boolean {
         val old = this.selected ?: -1
         this.selected = selected.coerceIn(0 until itemCount)
@@ -169,10 +204,7 @@ abstract class BoilrBite<T : Any, VH : ViewHolder<T>>(diffCallback: DiffUtil.Ite
 
         callback?.invoke(getSelectedItem())
         onSelectedItemChange?.onSelectedItemChange(
-            old,
-            if (old == -1) null else getItem(old),
-            selected,
-            getItem(selected)
+            old, if (old == -1) null else getItem(old), selected, getItem(selected)
         )
         return this.selected != null
     }
